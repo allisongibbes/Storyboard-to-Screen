@@ -1,5 +1,4 @@
 <style>
-  /* Container setup to maintain aspect ratio and keep everything contained */
   .comparison-widget {
     position: relative;
     width: 100%;
@@ -10,8 +9,6 @@
     border-radius: 8px;
     background-color: #000;
   }
-
-  /* Base styles for both images */
   .comparison-widget img {
     display: block;
     width: 100%;
@@ -19,18 +16,15 @@
     pointer-events: none;
     user-select: none;
   }
-
-  /* The storyboard image sits on top and will be clipped by JavaScript */
   .image-storyboard {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    clip-path: inset(0 50% 0 0); /* Initial state: cropped exactly in the middle */
+    clip-path: inset(0 50% 0 0);
+    -webkit-clip-path: inset(0 50% 0 0);
   }
-
-  /* The invisible slider that users actually interact with */
   .slider-input {
     position: absolute;
     top: 0;
@@ -42,8 +36,6 @@
     z-index: 10;
     margin: 0;
   }
-
-  /* The visual dividing line */
   .slider-line {
     position: absolute;
     top: 0;
@@ -56,8 +48,6 @@
     pointer-events: none;
     box-shadow: 0 0 10px rgba(0,0,0,0.8);
   }
-
-  /* The circular drag handle in the center of the line */
   .slider-button {
     position: absolute;
     top: 50%;
@@ -74,8 +64,6 @@
     justify-content: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.5);
   }
-
-  /* Creating the left/right arrows inside the button using pure CSS */
   .slider-button::before, .slider-button::after {
     content: '';
     width: 0;
@@ -94,36 +82,26 @@
 </style>
 
 <div class="comparison-widget">
-  <!-- Base Image (The Final Animated Frame goes here) -->
   <img src="https://via.placeholder.com/800x450/4CAF50/FFFFFF?text=Final+Animated+Frame" alt="Final Animated Frame" class="image-final">
-  
-  <!-- Overlay Image (The Storyboard Sketch goes here) -->
   <img src="https://via.placeholder.com/800x450/9E9E9E/FFFFFF?text=Storyboard+Sketch" alt="Storyboard Sketch" class="image-storyboard" id="storyboardOverlay">
-  
-  <!-- Visual Elements -->
   <div class="slider-line" id="dragLine"></div>
   <div class="slider-button" id="dragBtn"></div>
-  
-  <!-- Interactive Range Input -->
   <input type="range" min="0" max="100" value="50" class="slider-input" id="interactionSlider">
 </div>
 
 <script>
-  // Target the HTML elements
   const slider = document.getElementById('interactionSlider');
   const storyboard = document.getElementById('storyboardOverlay');
   const dragLine = document.getElementById('dragLine');
   const dragBtn = document.getElementById('dragBtn');
 
-  // Update image clipping and visual slider position when the user drags the input
   slider.addEventListener('input', (event) => {
     const sliderValue = event.target.value;
+    const clipValue = `inset(0 ${100 - sliderValue}% 0 0)`;
     
-    // Adjust the clip-path to reveal the image underneath
-    // 'inset(top right bottom left)' -> We change the 'right' crop amount
-    storyboard.style.clipPath = `inset(0 ${100 - sliderValue}% 0 0)`;
+    storyboard.style.clipPath = clipValue;
+    storyboard.style.webkitClipPath = clipValue;
     
-    // Move the visual line and button horizontally
     dragLine.style.left = `${sliderValue}%`;
     dragBtn.style.left = `${sliderValue}%`;
   });
